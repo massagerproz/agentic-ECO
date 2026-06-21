@@ -62,7 +62,11 @@ const ExtractionUI: React.FC = () => {
         whileHover={!isLoading ? { scale: 1.02 } : {}}
         whileTap={!isLoading ? { scale: 0.98 } : {}}
       >
-        {isLoading ? "Extracting..." : "Extract Evidence"}
+        {isLoading ? (
+          <span style={{display: "flex", alignItems: "center"}}>
+            AI is thinking... <span className="loader">✨</span>
+          </span>
+        ) : "Extract Evidence"}
       </motion.button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

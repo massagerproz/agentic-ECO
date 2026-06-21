@@ -7,8 +7,15 @@ This is an isolated feature module for CLEAR Climate OS/ERP, providing a proof-o
 - **Backend**: Python + FastAPI
   - Models: Pydantic schemas (`models.py`)
   - Endpoints: Extract notes, generate reports, run QA (`main.py`)
-- **Frontend**: React + Vite + TypeScript, using **Framer Motion** for polished entrance animations and interactive microinteractions (hover/tap states).
-- **State/Database**: Convex (Real-time tracking of drafted and approved evidence, and generated reports). Components utilize `AnimatePresence` to smoothly animate evidence moving between columns.
+- **Frontend**: React + Vite + TypeScript.
+  - **Styling**: Extensive **Glassmorphism** styling via `backdrop-filter: blur(24px)`, translucent `rgba` backgrounds, and fixed multi-layered animated gradient backgrounds in `index.css` and `App.tsx`.
+  - **Animations**: **Framer Motion** is utilized for polished entrance animations, interactive microinteractions (hover/tap states), and animated AI loading components (e.g. `pulse` loader). Components utilize `AnimatePresence` to smoothly animate evidence items moving between grid columns.
+  - **Deployment**: Vercel configuration (`vercel.json`) is included with rewrite rules to prevent 404 errors during SPA routing.
+- **State/Database**: Convex (Real-time tracking of drafted and approved evidence, and generated reports).
+
+## Technical Details: Asynchronous Workflow
+
+The FastAPI backend includes simulated processing latency (`asyncio.sleep()`) in all AI endpoints to model realistic LLM generation times. This is coupled with the frontend's animated loading states to demonstrate the intended user experience when processing large document extractions or generating multi-page reports.
 
 ## Quickstart
 

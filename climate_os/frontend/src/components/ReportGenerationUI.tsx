@@ -84,7 +84,11 @@ const ReportGenerationUI: React.FC = () => {
         whileHover={!(isLoading || approvedEvidence.length === 0) ? { scale: 1.02 } : {}}
         whileTap={!(isLoading || approvedEvidence.length === 0) ? { scale: 0.98 } : {}}
       >
-        {isLoading ? "Generating..." : "Generate Donor Report"}
+        {isLoading ? (
+          <span style={{display: "flex", alignItems: "center"}}>
+            Generating Draft... <span className="loader">✨</span>
+          </span>
+        ) : "Generate Donor Report"}
       </motion.button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -98,8 +102,14 @@ const ReportGenerationUI: React.FC = () => {
             style={{ marginTop: "1rem" }}
           >
             <h3>Draft Report</h3>
-            <pre style={{ background: "#f5f5f5", padding: "1rem", whiteSpace: "pre-wrap", color: "black" }}>
-              {draftReport}
+            <pre style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", whiteSpace: "pre-wrap", color: "#f8fafc", overflow: "hidden" }}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+              >
+                {draftReport}
+              </motion.div>
             </pre>
 
             <div style={{ marginTop: "1rem" }}>
@@ -110,7 +120,11 @@ const ReportGenerationUI: React.FC = () => {
                  whileHover={!qaIsLoading ? { scale: 1.05 } : {}}
                  whileTap={!qaIsLoading ? { scale: 0.95 } : {}}
                >
-                 {qaIsLoading ? "Running QA..." : "Run QA Review"}
+                 {qaIsLoading ? (
+                   <span style={{display: "flex", alignItems: "center"}}>
+                     Running checks... <span className="loader">🔍</span>
+                   </span>
+                 ) : "Run QA Review"}
                </motion.button>
                <motion.button
                  onClick={handleSaveReport}

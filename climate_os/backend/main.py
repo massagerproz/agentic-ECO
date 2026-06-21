@@ -7,6 +7,7 @@ from models import (
 )
 import os
 import json
+import asyncio
 
 app = FastAPI(title="CLEAR Climate OS Backend")
 
@@ -29,6 +30,9 @@ async def extract_evidence(request: ExtractRequest):
     """
     if not request.notes.strip():
         raise HTTPException(status_code=400, detail="Notes cannot be empty.")
+
+    # Simulate AI processing time
+    await asyncio.sleep(1.5)
 
     # In a real implementation we would call an LLM here to structure the notes.
     # We will use simple mock data logic.
@@ -57,6 +61,9 @@ async def generate_report(request: GenerateReportRequest):
     if not request.approved_evidence:
         raise HTTPException(status_code=400, detail="Must provide approved evidence.")
 
+    # Simulate AI processing time
+    await asyncio.sleep(2.0)
+
     report = f"## {request.project_name} - Donor Report Draft\n\n"
     report += "### Summary of Activities and Evidence\n"
 
@@ -72,6 +79,9 @@ async def qa_review(request: QAReviewRequest):
     """
     Mock implementation: Flags unsupported claims, missing evidence, etc.
     """
+    # Simulate AI processing time
+    await asyncio.sleep(1.0)
+
     flags = []
     passed = True
 
