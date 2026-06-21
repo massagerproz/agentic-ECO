@@ -1,5 +1,6 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import ExtractionUI from './components/ExtractionUI';
 import ApprovalUI from './components/ApprovalUI';
 import ReportGenerationUI from './components/ReportGenerationUI';
@@ -17,8 +18,6 @@ const containerVariants = {
     }
   }
 };
-
-import type { Variants } from "framer-motion";
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },

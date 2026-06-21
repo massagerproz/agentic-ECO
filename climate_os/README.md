@@ -10,7 +10,7 @@ This is an isolated feature module for CLEAR Climate OS/ERP, providing a proof-o
 - **Frontend**: React + Vite + TypeScript.
   - **Styling**: Extensive **Glassmorphism** styling via `backdrop-filter: blur(24px)`, translucent `rgba` backgrounds, and fixed multi-layered animated gradient backgrounds in `index.css` and `App.tsx`.
   - **Animations**: **Framer Motion** is utilized for polished entrance animations, interactive microinteractions (hover/tap states), and animated AI loading components (e.g. `pulse` loader). Components utilize `AnimatePresence` to smoothly animate evidence items moving between grid columns.
-  - **Deployment**: Vercel configuration (`vercel.json`) is included with rewrite rules to prevent 404 errors during SPA routing.
+  - **Deployment**: Vercel configuration (`vercel.json`) is included with rewrite rules to prevent 404 errors during SPA routing. Additionally, `vite.config.ts` incorporates `build.rollupOptions.output.manualChunks` to optimize JS chunk sizes and prevent >500kb warnings.
 - **State/Database**: Convex (Real-time tracking of drafted and approved evidence, and generated reports).
 
 ## Technical Details: Asynchronous Workflow

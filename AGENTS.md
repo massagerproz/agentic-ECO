@@ -16,6 +16,6 @@ Constraints: keep the AGPL LICENSE; no invented benchmarks/metrics; do not run g
 5. climate_os/ — The CLEAR Climate OS/ERP proof-of-work module. This is an isolated feature using Python FastAPI for backend logic, React/Vite/TS for the frontend, and Convex for real-time state.
     - The UI utilizes extensive **Glassmorphism** styling via `backdrop-filter: blur(24px)`, translucent `rgba` background colors, and a fixed multi-layered animated gradient background (managed in `climate_os/frontend/src/index.css` and `App.tsx`).
     - Microinteractions, entrance animations, and AI loading states are powered by `framer-motion`.
-    - Routing on static hosting platforms like Vercel is resolved via `climate_os/frontend/vercel.json` utilizing `rewrites`.
+    - Routing on static hosting platforms like Vercel is resolved via `climate_os/frontend/vercel.json` utilizing `rewrites`. We also utilize `build.rollupOptions.output.manualChunks` in `vite.config.ts` to optimize JS chunk generation during Vercel builds.
     - Simulated AI processing latency (`asyncio.sleep()`) is built into the backend to demonstrate realistic asynchronous UX workflows.
     - Uses Pydantic and Zod for robust data validation.
