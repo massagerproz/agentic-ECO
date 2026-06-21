@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { ExtractResponseSchema } from "../schemas";
 
 const ExtractionUI: React.FC = () => {
   const [notes, setNotes] = useState("");
@@ -18,7 +19,8 @@ const ExtractionUI: React.FC = () => {
       const response = await axios.post(`${backendUrl}/api/extract`, {
         notes,
       });
-      setExtractedEvidence(response.data.evidence);
+      const parsed = ExtractResponseSchema.parse(response.data);
+      setExtractedEvidence(parsed.evidence);
     } catch (err: any) {
       setError(err.response?.data?.detail || err.message || "Failed to extract");
     } finally {

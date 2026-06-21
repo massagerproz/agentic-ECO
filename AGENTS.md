@@ -13,3 +13,4 @@ Deliverables (build a credible open-source project, consistent with the brief's 
    github.com/redevops-io/agent-harness.
 4. docs/ (architecture.md, configuration.md), .env.example, Makefile or justfile.
 Constraints: keep the AGPL LICENSE; no invented benchmarks/metrics; do not run git push.
+5. climate_os/ — The CLEAR Climate OS/ERP proof-of-work module. This is an isolated feature using Python FastAPI for backend logic, React/Vite/TS for the frontend, and Convex for real-time state. Use Pydantic and Zod for validation.

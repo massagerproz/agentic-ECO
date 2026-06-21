@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { GenerateReportResponseSchema, QAReviewResponseSchema } from "../schemas";
 
 const ReportGenerationUI: React.FC = () => {
   const approvedEvidence = useQuery(api.functions.getEvidence, { status: "approved" });
@@ -29,7 +30,8 @@ const ReportGenerationUI: React.FC = () => {
         approved_evidence: approvedEvidence,
         project_name: "Demo Climate Project"
       });
-      setDraftReport(response.data.draft_report);
+      const parsed = GenerateReportResponseSchema.parse(response.data);
+      setDraftReport(parsed.draft_report);
     } catch (err: any) {
       setError(err.response?.data?.detail || err.message || "Failed to generate report");
     } finally {
@@ -47,7 +49,8 @@ const ReportGenerationUI: React.FC = () => {
         draft_report: draftReport,
         approved_evidence: approvedEvidence,
       });
-      setQaResult(response.data);
+      const parsed = QAReviewResponseSchema.parse(response.data);
+      setQaResult(parsed);
     } catch (err: any) {
       alert("QA failed: " + (err.response?.data?.detail || err.message));
     } finally {
