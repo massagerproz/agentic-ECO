@@ -3,6 +3,7 @@ import axios from "axios";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { GenerateReportResponseSchema, QAReviewResponseSchema } from "../schemas";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ReportGenerationUI: React.FC = () => {
   const approvedEvidence = useQuery(api.functions.getEvidence, { status: "approved" });
@@ -77,48 +78,76 @@ const ReportGenerationUI: React.FC = () => {
       <h2>Step 3 & 4: Generate Report & QA Review</h2>
       <p>Uses {approvedEvidence.length} approved evidence items.</p>
 
-      <button onClick={handleGenerate} disabled={isLoading || approvedEvidence.length === 0}>
+      <motion.button
+        onClick={handleGenerate}
+        disabled={isLoading || approvedEvidence.length === 0}
+        whileHover={!(isLoading || approvedEvidence.length === 0) ? { scale: 1.02 } : {}}
+        whileTap={!(isLoading || approvedEvidence.length === 0) ? { scale: 0.98 } : {}}
+      >
         {isLoading ? "Generating..." : "Generate Donor Report"}
-      </button>
+      </motion.button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {draftReport && (
-        <div style={{ marginTop: "1rem" }}>
-          <h3>Draft Report</h3>
-          <pre style={{ background: "#f5f5f5", padding: "1rem", whiteSpace: "pre-wrap", color: "black" }}>
-            {draftReport}
-          </pre>
+      <AnimatePresence>
+        {draftReport && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ marginTop: "1rem" }}
+          >
+            <h3>Draft Report</h3>
+            <pre style={{ background: "#f5f5f5", padding: "1rem", whiteSpace: "pre-wrap", color: "black" }}>
+              {draftReport}
+            </pre>
 
-          <div style={{ marginTop: "1rem" }}>
-             <button onClick={handleRunQA} disabled={qaIsLoading} style={{ marginRight: "1rem" }}>
-               {qaIsLoading ? "Running QA..." : "Run QA Review"}
-             </button>
-             <button onClick={handleSaveReport}>
-               Save Report
-             </button>
-          </div>
-
-          {qaResult && (
-            <div className={`qa-box ${qaResult.passed ? 'passed' : 'failed'}`}>
-              <h4 style={{marginTop: 0}}>QA Results</h4>
-              <p style={{margin: "0.5rem 0", fontWeight: 600}}>
-                Status: {qaResult.passed ? <span style={{color: "var(--success)"}}>Passed</span> : <span style={{color: "var(--danger)"}}>Failed</span>}
-              </p>
-
-              {qaResult.flags.length > 0 && (
-                <ul>
-                  {qaResult.flags.map((flag: any, index: number) => (
-                    <li key={index}>
-                      <strong>{flag.flag_type}</strong> ({flag.severity}): {flag.description}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <div style={{ marginTop: "1rem" }}>
+               <motion.button
+                 onClick={handleRunQA}
+                 disabled={qaIsLoading}
+                 style={{ marginRight: "1rem" }}
+                 whileHover={!qaIsLoading ? { scale: 1.05 } : {}}
+                 whileTap={!qaIsLoading ? { scale: 0.95 } : {}}
+               >
+                 {qaIsLoading ? "Running QA..." : "Run QA Review"}
+               </motion.button>
+               <motion.button
+                 onClick={handleSaveReport}
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.95 }}
+               >
+                 Save Report
+               </motion.button>
             </div>
-          )}
-        </div>
-      )}
+
+            <AnimatePresence>
+              {qaResult && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className={`qa-box ${qaResult.passed ? 'passed' : 'failed'}`}
+                >
+                  <h4 style={{marginTop: 0}}>QA Results</h4>
+                  <p style={{margin: "0.5rem 0", fontWeight: 600}}>
+                    Status: {qaResult.passed ? <span style={{color: "var(--success)"}}>Passed</span> : <span style={{color: "var(--danger)"}}>Failed</span>}
+                  </p>
+
+                  {qaResult.flags.length > 0 && (
+                    <ul>
+                      {qaResult.flags.map((flag: any, index: number) => (
+                        <li key={index}>
+                          <strong>{flag.flag_type}</strong> ({flag.severity}): {flag.description}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

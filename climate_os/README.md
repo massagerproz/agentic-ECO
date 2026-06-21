@@ -7,8 +7,8 @@ This is an isolated feature module for CLEAR Climate OS/ERP, providing a proof-o
 - **Backend**: Python + FastAPI
   - Models: Pydantic schemas (`models.py`)
   - Endpoints: Extract notes, generate reports, run QA (`main.py`)
-- **Frontend**: React + Vite + TypeScript
-- **State/Database**: Convex (Real-time tracking of drafted and approved evidence, and generated reports)
+- **Frontend**: React + Vite + TypeScript, using **Framer Motion** for polished entrance animations and interactive microinteractions (hover/tap states).
+- **State/Database**: Convex (Real-time tracking of drafted and approved evidence, and generated reports). Components utilize `AnimatePresence` to smoothly animate evidence moving between columns.
 
 ## Quickstart
 

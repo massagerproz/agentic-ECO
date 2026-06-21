@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ApprovalUI: React.FC = () => {
   const drafts = useQuery(api.functions.getEvidence, { status: "draft" });
@@ -27,22 +28,41 @@ const ApprovalUI: React.FC = () => {
         <p>No drafts pending review.</p>
       ) : (
         <ul>
-          {drafts.map((draft) => (
-            <li key={draft._id}>
-              <div style={{marginBottom: "0.5rem"}}>
-                 <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{draft.category}</span>
-                 {draft.content}
-              </div>
-              <div>
-                <button className="success" onClick={() => handleApprove(draft._id)} style={{ marginRight: "0.5rem" }}>
-                  Approve
-                </button>
-                <button className="danger" onClick={() => handleReject(draft._id)}>
-                  Reject
-                </button>
-              </div>
-            </li>
-          ))}
+          <AnimatePresence>
+            {drafts.map((draft) => (
+              <motion.li
+                key={draft._id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+              >
+                <div style={{marginBottom: "0.5rem"}}>
+                   <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{draft.category}</span>
+                   {draft.content}
+                </div>
+                <div>
+                  <motion.button
+                    className="success"
+                    onClick={() => handleApprove(draft._id)}
+                    style={{ marginRight: "0.5rem" }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Approve
+                  </motion.button>
+                  <motion.button
+                    className="danger"
+                    onClick={() => handleReject(draft._id)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Reject
+                  </motion.button>
+                </div>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       )}
     </div>

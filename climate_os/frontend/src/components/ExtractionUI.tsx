@@ -3,6 +3,7 @@ import axios from "axios";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { ExtractResponseSchema } from "../schemas";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ExtractionUI: React.FC = () => {
   const [notes, setNotes] = useState("");
@@ -55,28 +56,56 @@ const ExtractionUI: React.FC = () => {
         style={{ width: "100%", marginBottom: "1rem" }}
       />
       <br />
-      <button onClick={handleExtract} disabled={isLoading}>
+      <motion.button
+        onClick={handleExtract}
+        disabled={isLoading}
+        whileHover={!isLoading ? { scale: 1.02 } : {}}
+        whileTap={!isLoading ? { scale: 0.98 } : {}}
+      >
         {isLoading ? "Extracting..." : "Extract Evidence"}
-      </button>
+      </motion.button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {extractedEvidence.length > 0 && (
-        <div style={{ marginTop: "1rem" }}>
-          <h3>Extracted Drafts (AI Output)</h3>
-          <ul>
-            {extractedEvidence.map((item, index) => (
-              <li key={index} style={{ marginBottom: "0.5rem" }}>
-                <div>
-                  <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{item.category}</span>
-                  {item.content}
-                </div>
-                <button className="secondary" style={{marginTop: "0.5rem"}} onClick={() => handleSaveToTracker(item)}>Save as Draft</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <AnimatePresence>
+        {extractedEvidence.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ marginTop: "1rem" }}
+          >
+            <h3>Extracted Drafts (AI Output)</h3>
+            <ul>
+              <AnimatePresence>
+                {extractedEvidence.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    style={{ marginBottom: "0.5rem" }}
+                  >
+                    <div>
+                      <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{item.category}</span>
+                      {item.content}
+                    </div>
+                    <motion.button
+                      className="secondary"
+                      style={{marginTop: "0.5rem"}}
+                      onClick={() => handleSaveToTracker(item)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Save as Draft
+                    </motion.button>
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
