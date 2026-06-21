@@ -19,7 +19,7 @@ const ApprovalUI: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "1rem", border: "1px solid #ccc", marginBottom: "1rem" }}>
+    <div className="card">
       <h2>Step 2: Human Review & Approval</h2>
       <p>Only approved evidence enters the tracker for reporting.</p>
 
@@ -28,13 +28,16 @@ const ApprovalUI: React.FC = () => {
       ) : (
         <ul>
           {drafts.map((draft) => (
-            <li key={draft._id} style={{ marginBottom: "0.5rem" }}>
-              <strong>{draft.category}</strong>: {draft.content}
-              <div style={{ marginTop: "0.25rem" }}>
-                <button onClick={() => handleApprove(draft._id)} style={{ marginRight: "0.5rem", color: "green" }}>
+            <li key={draft._id}>
+              <div style={{marginBottom: "0.5rem"}}>
+                 <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{draft.category}</span>
+                 {draft.content}
+              </div>
+              <div>
+                <button className="success" onClick={() => handleApprove(draft._id)} style={{ marginRight: "0.5rem" }}>
                   Approve
                 </button>
-                <button onClick={() => handleReject(draft._id)} style={{ color: "red" }}>
+                <button className="danger" onClick={() => handleReject(draft._id)}>
                   Reject
                 </button>
               </div>

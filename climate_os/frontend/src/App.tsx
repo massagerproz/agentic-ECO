@@ -2,6 +2,7 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import ExtractionUI from './components/ExtractionUI';
 import ApprovalUI from './components/ApprovalUI';
 import ReportGenerationUI from './components/ReportGenerationUI';
+import EvidenceTrackerUI from './components/EvidenceTrackerUI';
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string;
 const convex = new ConvexReactClient(convexUrl);
@@ -15,6 +16,7 @@ function App() {
 
         <ExtractionUI />
         <ApprovalUI />
+        <EvidenceTrackerUI />
         <ReportGenerationUI />
       </div>
     </ConvexProvider>

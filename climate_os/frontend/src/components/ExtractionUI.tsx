@@ -43,8 +43,9 @@ const ExtractionUI: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "1rem", border: "1px solid #ccc", marginBottom: "1rem" }}>
+    <div className="card">
       <h2>Step 1: Extract Evidence from Notes</h2>
+      <p>Paste raw meeting notes, updates, or inputs to let AI structure them.</p>
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
@@ -66,8 +67,11 @@ const ExtractionUI: React.FC = () => {
           <ul>
             {extractedEvidence.map((item, index) => (
               <li key={index} style={{ marginBottom: "0.5rem" }}>
-                <strong>{item.category}:</strong> {item.content}{" "}
-                <button onClick={() => handleSaveToTracker(item)}>Save as Draft</button>
+                <div>
+                  <span className="status-badge status-draft" style={{marginRight: "0.5rem"}}>{item.category}</span>
+                  {item.content}
+                </div>
+                <button className="secondary" style={{marginTop: "0.5rem"}} onClick={() => handleSaveToTracker(item)}>Save as Draft</button>
               </li>
             ))}
           </ul>

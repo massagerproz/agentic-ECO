@@ -73,7 +73,7 @@ const ReportGenerationUI: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "1rem", border: "1px solid #ccc", marginBottom: "1rem" }}>
+    <div className="card">
       <h2>Step 3 & 4: Generate Report & QA Review</h2>
       <p>Uses {approvedEvidence.length} approved evidence items.</p>
 
@@ -100,9 +100,11 @@ const ReportGenerationUI: React.FC = () => {
           </div>
 
           {qaResult && (
-            <div style={{ marginTop: "1rem", padding: "1rem", border: "1px dashed red" }}>
-              <h4>QA Results</h4>
-              <p>Status: {qaResult.passed ? <span style={{color: "green"}}>Passed</span> : <span style={{color: "red"}}>Failed</span>}</p>
+            <div className={`qa-box ${qaResult.passed ? 'passed' : 'failed'}`}>
+              <h4 style={{marginTop: 0}}>QA Results</h4>
+              <p style={{margin: "0.5rem 0", fontWeight: 600}}>
+                Status: {qaResult.passed ? <span style={{color: "var(--success)"}}>Passed</span> : <span style={{color: "var(--danger)"}}>Failed</span>}
+              </p>
 
               {qaResult.flags.length > 0 && (
                 <ul>
