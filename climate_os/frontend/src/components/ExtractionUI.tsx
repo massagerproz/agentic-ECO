@@ -3,13 +3,14 @@ import axios from "axios";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { ExtractResponseSchema } from "../schemas";
+import type { EvidenceItem } from "../schemas";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ExtractionUI: React.FC = () => {
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [extractedEvidence, setExtractedEvidence] = useState<any[]>([]);
+  const [extractedEvidence, setExtractedEvidence] = useState<EvidenceItem[]>([]);
   const addEvidence = useMutation(api.functions.addEvidence);
 
   const handleExtract = async () => {
@@ -22,14 +23,15 @@ const ExtractionUI: React.FC = () => {
       });
       const parsed = ExtractResponseSchema.parse(response.data);
       setExtractedEvidence(parsed.evidence);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to extract");
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      setError(error.response?.data?.detail || error.message || "Failed to extract");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSaveToTracker = async (evidenceItem: any) => {
+  const handleSaveToTracker = async (evidenceItem: EvidenceItem) => {
     try {
       await addEvidence({
         category: evidenceItem.category,
@@ -38,8 +40,9 @@ const ExtractionUI: React.FC = () => {
         status: "draft",
       });
       alert("Added to tracker as draft!");
-    } catch (err: any) {
-      alert("Failed to save: " + err.message);
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      alert("Failed to save: " + error.message);
     }
   };
 

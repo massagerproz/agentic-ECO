@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ApprovalUI: React.FC = () => {
@@ -11,11 +12,11 @@ const ApprovalUI: React.FC = () => {
     return <div>Loading drafts...</div>;
   }
 
-  const handleApprove = async (id: any) => {
+  const handleApprove = async (id: Id<"evidence">) => {
     await updateStatus({ id, status: "approved" });
   };
 
-  const handleReject = async (id: any) => {
+  const handleReject = async (id: Id<"evidence">) => {
     await updateStatus({ id, status: "rejected" });
   };
 

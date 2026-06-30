@@ -3,6 +3,7 @@ import axios from "axios";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { GenerateReportResponseSchema, QAReviewResponseSchema } from "../schemas";
+import type { QAReviewResponse, QAFlag } from "../schemas";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ReportGenerationUI: React.FC = () => {
@@ -15,7 +16,7 @@ const ReportGenerationUI: React.FC = () => {
 
   // QA state
   const [qaIsLoading, setQaIsLoading] = useState(false);
-  const [qaResult, setQaResult] = useState<any>(null);
+  const [qaResult, setQaResult] = useState<QAReviewResponse | null>(null);
 
   if (approvedEvidence === undefined) {
     return <div>Loading approved evidence...</div>;
@@ -33,8 +34,9 @@ const ReportGenerationUI: React.FC = () => {
       });
       const parsed = GenerateReportResponseSchema.parse(response.data);
       setDraftReport(parsed.draft_report);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to generate report");
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      setError(error.response?.data?.detail || error.message || "Failed to generate report");
     } finally {
       setIsLoading(false);
     }
@@ -52,8 +54,9 @@ const ReportGenerationUI: React.FC = () => {
       });
       const parsed = QAReviewResponseSchema.parse(response.data);
       setQaResult(parsed);
-    } catch (err: any) {
-      alert("QA failed: " + (err.response?.data?.detail || err.message));
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      alert("QA failed: " + (error.response?.data?.detail || error.message));
     } finally {
       setQaIsLoading(false);
     }
@@ -68,8 +71,9 @@ const ReportGenerationUI: React.FC = () => {
         status: "draft",
       });
       alert("Report saved to database!");
-    } catch (err: any) {
-      alert("Failed to save report: " + err.message);
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      alert("Failed to save report: " + error.message);
     }
   };
 
@@ -102,15 +106,27 @@ const ReportGenerationUI: React.FC = () => {
             style={{ marginTop: "1rem" }}
           >
             <h3>Draft Report</h3>
-            <pre style={{ background: "rgba(0,0,0,0.4)", padding: "1rem", whiteSpace: "pre-wrap", color: "#f8fafc", overflow: "hidden" }}>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-              >
-                {draftReport}
-              </motion.div>
-            </pre>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
+              <textarea
+                value={draftReport}
+                onChange={(e) => setDraftReport(e.target.value)}
+                style={{
+                  background: "rgba(0,0,0,0.4)",
+                  padding: "1rem",
+                  color: "#f8fafc",
+                  width: "100%",
+                  minHeight: "200px",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+                  fontSize: "0.875rem"
+                }}
+              />
+            </motion.div>
 
             <div style={{ marginTop: "1rem" }}>
                <motion.button
@@ -149,7 +165,7 @@ const ReportGenerationUI: React.FC = () => {
 
                   {qaResult.flags.length > 0 && (
                     <ul>
-                      {qaResult.flags.map((flag: any, index: number) => (
+                      {qaResult.flags.map((flag: QAFlag, index: number) => (
                         <li key={index}>
                           <strong>{flag.flag_type}</strong> ({flag.severity}): {flag.description}
                         </li>
