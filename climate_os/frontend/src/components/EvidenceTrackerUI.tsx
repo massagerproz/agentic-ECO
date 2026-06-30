@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { motion, AnimatePresence } from "framer-motion";
 
 const EvidenceTrackerUI: React.FC = () => {
   const allEvidence = useQuery(api.functions.getEvidence, {});
+
+  // ⚡ Bolt: Memoize filtered arrays to prevent redundant O(N) array filtering
+  // across 3 lists during every re-render (which Framer Motion does often).
+  const drafts = useMemo(() => allEvidence?.filter(e => e.status === "draft") || [], [allEvidence]);
+  const approved = useMemo(() => allEvidence?.filter(e => e.status === "approved") || [], [allEvidence]);
+  const rejected = useMemo(() => allEvidence?.filter(e => e.status === "rejected") || [], [allEvidence]);
 
   if (allEvidence === undefined) {
     return <div>Loading tracker...</div>;
@@ -23,7 +29,7 @@ const EvidenceTrackerUI: React.FC = () => {
             <h3>Drafts</h3>
             <ul>
               <AnimatePresence>
-                {allEvidence.filter(e => e.status === "draft").map(e => (
+                {drafts.map(e => (
                   <motion.li
                     key={e._id}
                     style={{fontSize: "0.85rem"}}
@@ -42,7 +48,7 @@ const EvidenceTrackerUI: React.FC = () => {
             <h3>Approved</h3>
             <ul>
               <AnimatePresence>
-                {allEvidence.filter(e => e.status === "approved").map(e => (
+                {approved.map(e => (
                   <motion.li
                     key={e._id}
                     style={{fontSize: "0.85rem", borderLeft: "3px solid var(--primary)"}}
@@ -61,7 +67,7 @@ const EvidenceTrackerUI: React.FC = () => {
             <h3>Rejected</h3>
             <ul>
               <AnimatePresence>
-                {allEvidence.filter(e => e.status === "rejected").map(e => (
+                {rejected.map(e => (
                   <motion.li
                     key={e._id}
                     style={{fontSize: "0.85rem", borderLeft: "3px solid var(--danger)"}}
