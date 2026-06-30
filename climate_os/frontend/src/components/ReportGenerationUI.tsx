@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { GenerateReportResponseSchema, QAReviewResponseSchema } from "../schemas";
+import { GenerateReportResponseSchema, QAReviewResponseSchema, RewriteResponseSchema } from "../schemas";
 import type { QAReviewResponse, QAFlag } from "../schemas";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,6 +17,10 @@ const ReportGenerationUI: React.FC = () => {
   // QA state
   const [qaIsLoading, setQaIsLoading] = useState(false);
   const [qaResult, setQaResult] = useState<QAReviewResponse | null>(null);
+
+  // Rewrite state
+  const [rewriteInstructions, setRewriteInstructions] = useState("");
+  const [rewriteIsLoading, setRewriteIsLoading] = useState(false);
 
   if (approvedEvidence === undefined) {
     return <div>Loading approved evidence...</div>;
@@ -59,6 +63,28 @@ const ReportGenerationUI: React.FC = () => {
       alert("QA failed: " + (error.response?.data?.detail || error.message));
     } finally {
       setQaIsLoading(false);
+    }
+  };
+
+  const handleRewrite = async () => {
+    if (!draftReport || !rewriteInstructions.trim()) return;
+
+    setRewriteIsLoading(true);
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
+      const response = await axios.post(`${backendUrl}/api/rewrite_report`, {
+        draft_report: draftReport,
+        instructions: rewriteInstructions,
+      });
+      const parsed = RewriteResponseSchema.parse(response.data);
+      setDraftReport(parsed.rewritten_report);
+      setRewriteInstructions("");
+      setQaResult(null); // Clear QA since report changed
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }, message?: string };
+      alert("Rewrite failed: " + (error.response?.data?.detail || error.message));
+    } finally {
+      setRewriteIsLoading(false);
     }
   };
 
@@ -127,6 +153,39 @@ const ReportGenerationUI: React.FC = () => {
                 }}
               />
             </motion.div>
+
+            <div style={{ marginTop: "1rem", background: "rgba(255, 255, 255, 0.05)", padding: "1rem", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.1)" }}>
+              <h4 style={{marginTop: 0}}>AI Rewrite</h4>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <input
+                  type="text"
+                  value={rewriteInstructions}
+                  onChange={(e) => setRewriteInstructions(e.target.value)}
+                  placeholder="e.g. Make it more formal, fix typos, emphasize risks..."
+                  style={{
+                    flex: 1,
+                    padding: "0.5rem",
+                    borderRadius: "6px",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    background: "rgba(255, 255, 255, 0.1)",
+                    color: "white"
+                  }}
+                />
+                <motion.button
+                  onClick={handleRewrite}
+                  disabled={rewriteIsLoading || !rewriteInstructions.trim()}
+                  whileHover={!(rewriteIsLoading || !rewriteInstructions.trim()) ? { scale: 1.05 } : {}}
+                  whileTap={!(rewriteIsLoading || !rewriteInstructions.trim()) ? { scale: 0.95 } : {}}
+                  className="secondary"
+                >
+                  {rewriteIsLoading ? (
+                    <span style={{display: "flex", alignItems: "center"}}>
+                      Rewriting... <span className="loader">✨</span>
+                    </span>
+                  ) : "Rewrite"}
+                </motion.button>
+              </div>
+            </div>
 
             <div style={{ marginTop: "1rem" }}>
                <motion.button

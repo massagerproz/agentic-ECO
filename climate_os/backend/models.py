@@ -31,3 +31,10 @@ class QAFlag(BaseModel):
 class QAReviewResponse(BaseModel):
     flags: List[QAFlag]
     passed: bool
+
+class RewriteRequest(BaseModel):
+    draft_report: str
+    instructions: str = Field(description="Instructions on how to rewrite the report, e.g. 'make it more formal'")
+
+class RewriteResponse(BaseModel):
+    rewritten_report: str

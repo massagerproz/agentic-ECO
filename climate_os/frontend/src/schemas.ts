@@ -26,6 +26,11 @@ export const QAReviewResponseSchema = z.object({
   passed: z.boolean(),
 });
 
+export const RewriteResponseSchema = z.object({
+  rewritten_report: z.string(),
+});
+
 export type EvidenceItem = z.infer<typeof EvidenceItemSchema>;
+export type RewriteResponse = z.infer<typeof RewriteResponseSchema>;
 export type QAReviewResponse = z.infer<typeof QAReviewResponseSchema>;
 export type QAFlag = z.infer<typeof QAFlagSchema>;

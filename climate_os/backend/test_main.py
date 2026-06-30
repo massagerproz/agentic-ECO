@@ -66,3 +66,27 @@ def test_qa_review_endpoint_empty_evidence():
     assert data["passed"] is False
     assert len(data["flags"]) > 0
     assert any(flag["flag_type"] == "missing_evidence" for flag in data["flags"])
+
+def test_rewrite_endpoint_success():
+    response = client.post("/api/rewrite_report", json={
+        "draft_report": "This is a report.",
+        "instructions": "Make it longer."
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert "Make it longer." in data["rewritten_report"]
+    assert "This is a report." in data["rewritten_report"]
+
+def test_rewrite_endpoint_empty_report():
+    response = client.post("/api/rewrite_report", json={
+        "draft_report": "  ",
+        "instructions": "Make it longer."
+    })
+    assert response.status_code == 400
+
+def test_rewrite_endpoint_empty_instructions():
+    response = client.post("/api/rewrite_report", json={
+        "draft_report": "This is a report.",
+        "instructions": ""
+    })
+    assert response.status_code == 400

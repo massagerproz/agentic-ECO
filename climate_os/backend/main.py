@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import (
     ExtractRequest, ExtractResponse, EvidenceItem,
     GenerateReportRequest, GenerateReportResponse,
-    QAReviewRequest, QAReviewResponse, QAFlag
+    QAReviewRequest, QAReviewResponse, QAFlag,
+    RewriteRequest, RewriteResponse
 )
 import os
 import json
@@ -103,3 +104,22 @@ async def qa_review(request: QAReviewRequest):
         passed = False
 
     return QAReviewResponse(flags=flags, passed=passed)
+
+@app.post("/api/rewrite_report", response_model=RewriteResponse)
+async def rewrite_report(request: RewriteRequest):
+    """
+    Mock implementation: Rewrites the report based on instructions.
+    """
+    if not request.draft_report.strip():
+        raise HTTPException(status_code=400, detail="Draft report cannot be empty.")
+
+    if not request.instructions.strip():
+        raise HTTPException(status_code=400, detail="Instructions cannot be empty.")
+
+    # Simulate AI processing time
+    await asyncio.sleep(1.5)
+
+    # In a real app we'd call an LLM here. We'll just do a simple string append for the mock.
+    rewritten = request.draft_report + f"\n\n[AI Rewrite applied: {request.instructions}]"
+
+    return RewriteResponse(rewritten_report=rewritten)
