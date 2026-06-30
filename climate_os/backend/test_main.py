@@ -53,3 +53,16 @@ def test_qa_review_endpoint_failed():
     assert data["passed"] is False
     assert len(data["flags"]) > 0
     assert data["flags"][0]["flag_type"] == "overclaiming"
+
+def test_qa_review_endpoint_empty_evidence():
+    evidence = []
+    report = "The project is going well."
+    response = client.post("/api/qa_review", json={
+        "approved_evidence": evidence,
+        "draft_report": report
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert data["passed"] is False
+    assert len(data["flags"]) > 0
+    assert any(flag["flag_type"] == "missing_evidence" for flag in data["flags"])

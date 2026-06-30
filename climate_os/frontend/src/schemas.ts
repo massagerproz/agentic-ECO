@@ -25,3 +25,7 @@ export const QAReviewResponseSchema = z.object({
   flags: z.array(QAFlagSchema),
   passed: z.boolean(),
 });
+
+export type EvidenceItem = z.infer<typeof EvidenceItemSchema>;
+export type QAReviewResponse = z.infer<typeof QAReviewResponseSchema>;
+export type QAFlag = z.infer<typeof QAFlagSchema>;

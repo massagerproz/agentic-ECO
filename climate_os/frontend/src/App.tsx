@@ -44,7 +44,8 @@ function App() {
           background: "radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(0,0,0,0) 70%)",
           borderRadius: "50%",
           zIndex: -1,
-          filter: "blur(40px)"
+          filter: "blur(40px)",
+          willChange: "transform"
         }}
       />
       <motion.div
@@ -63,7 +64,8 @@ function App() {
           background: "radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(0,0,0,0) 70%)",
           borderRadius: "50%",
           zIndex: -1,
-          filter: "blur(60px)"
+          filter: "blur(60px)",
+          willChange: "transform"
         }}
       />
 
